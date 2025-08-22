@@ -4,14 +4,12 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.lucasm.lmsfilmes.dto.FavoriteDTO;
 import com.lucasm.lmsfilmes.dto.TmdbDTO;
 import com.lucasm.lmsfilmes.service.MovieService;
 
@@ -47,23 +45,26 @@ public class MovieController {
     }
 
     // Método para adicionar/remover um filme dos favoritos.
-    @PostMapping("/movies/favorite")
-    public ResponseEntity<String> toggleFavorite(@RequestBody FavoriteDTO favorite) {
-        movieService.toggleFavorite(favorite);
-        return ResponseEntity.ok("Favorite status updated");
-    }
+    // @PostMapping("/movies/favorite")
+    // public ResponseEntity<String> toggleFavorite(@RequestBody FavoriteDTO favorite) {
+    //     movieService.toggleFavorite(favorite);
+    //     return ResponseEntity.ok("Favorite status updated");
+    // }
 
     // Método para verificar se um filme é favorito.
     @GetMapping("/movies/favoritestatus")
-    public ResponseEntity<FavoriteDTO> getFavoriteStatus(@RequestParam String movieId, @RequestParam String nickname) {
+    public ResponseEntity<Boolean> getFavoriteStatus(@RequestParam String movieId) {
+        // Pega o nickname do usuário logado
+        String nickname = SecurityContextHolder.getContext().getAuthentication().getName();
+
         boolean isFavorite = movieService.isFavorite(movieId, nickname);
-        return ResponseEntity.ok(new FavoriteDTO(isFavorite));
+        return ResponseEntity.ok(isFavorite);
     }
 
     // Método para obter todos os filmes favoritos de um usuário.
-    @GetMapping("/movies/getfavorites")
-    public ResponseEntity<FavoriteDTO> getAllFavorites(@RequestParam String nickname) {
-        FavoriteDTO movies = movieService.getAllFavorites(nickname);
-        return ResponseEntity.ok(movies);
-    }
+    // @GetMapping("/movies/getfavorites")
+    // public ResponseEntity<FavoriteDTO> getAllFavorites(@RequestParam String nickname) {
+    //     FavoriteDTO movies = movieService.getAllFavorites(nickname);
+    //     return ResponseEntity.ok(movies);
+    // }
 }

@@ -6,7 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import com.lucasm.lmsfilmes.dto.ResponseDTO;
+import com.lucasm.lmsfilmes.dto.AuthDTO;
 import com.lucasm.lmsfilmes.service.AuthService;
 
 /**
@@ -20,13 +20,13 @@ public class AuthController {
 
     // Método para registrar um novo usuário.
     @PostMapping("/auth/register")
-    public ResponseEntity<ResponseDTO> register(@RequestBody ResponseDTO reg) {
+    public ResponseEntity<String> register(@RequestBody AuthDTO reg) {
         return ResponseEntity.ok(authService.register(reg));
     }
 
     // Método para realizar login.
     @PostMapping("/auth/login")
-    public ResponseEntity<ResponseDTO> login(@RequestBody ResponseDTO req) {
+    public ResponseEntity<String> login(@RequestBody AuthDTO req) {
         return ResponseEntity.ok(authService.login(req));
     }
 }
