@@ -2,10 +2,12 @@ package com.lucasm.lmsfilmes.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lucasm.lmsfilmes.dto.TmdbDTO;
-import com.lucasm.lmsfilmes.dto.FavoriteDTO;
+import com.lucasm.lmsfilmes.exceptions.ResourceNotFoundException;
 import com.lucasm.lmsfilmes.model.FavoriteModel;
 import com.lucasm.lmsfilmes.repository.FavoriteRepository;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +20,6 @@ import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.net.URLEncoder;
 
 /**
@@ -26,6 +27,8 @@ import java.net.URLEncoder;
  */
 @Service
 public class MovieService {
+
+    private static final Logger logger = LoggerFactory.getLogger(MovieService.class);
 
     private final HttpClient httpClient;
     private final ObjectMapper objectMapper;
@@ -41,13 +44,8 @@ public class MovieService {
         this.apiKey = apiKey;
     }
 
-    /**
-     * Busca filmes com base em uma query.
-     * 
-     * @param query Termo de busca
-     * @return Lista de filmes encontrados
-     */
     public List<TmdbDTO> searchMovies(String query, int page) {
+        logger.info("Buscando filmes para a query '{}' na página {}", query, page);
         try {
             String encodedQuery = URLEncoder.encode(query, StandardCharsets.UTF_8.toString());
             HttpRequest request = HttpRequest.newBuilder()
@@ -58,25 +56,25 @@ public class MovieService {
                     .build();
 
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            logger.debug("Status code da busca: {}", response.statusCode());
 
             if (response.statusCode() == 200) {
                 MovieSearchResponse searchResponse = objectMapper.readValue(response.body(), MovieSearchResponse.class);
-                return searchResponse.getResults();
+                logger.info("Encontrados {} filmes para a query '{}'", searchResponse.results().size(), query);
+                return searchResponse.results();
             } else {
-                return List.of(new TmdbDTO(404, "Filme não encontrado"));
+                logger.warn("Nenhum filme encontrado para a query '{}', status code {}", query, response.statusCode());
+                throw new ResourceNotFoundException("Nenhum filme encontrado para a busca: " + query);
             }
+
         } catch (IOException | InterruptedException | URISyntaxException e) {
-            return List.of(new TmdbDTO(500, "Erro ao buscar filmes: " + e.getMessage()));
+            logger.error("Erro ao buscar filmes: {}", e.getMessage(), e);
+            throw new RuntimeException("Erro ao buscar filmes: " + e.getMessage(), e);
         }
     }
 
-    /**
-     * Busca detalhes de um filme específico.
-     * 
-     * @param movieId ID do filme
-     * @return Detalhes do filme
-     */
     public TmdbDTO getMoviesDetails(String movieId) {
+        logger.info("Buscando detalhes do filme com ID {}", movieId);
         try {
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(new URI(tmdbApiUrl + "/movie/" + movieId + "?language=pt-BR"))
@@ -86,27 +84,26 @@ public class MovieService {
                     .build();
 
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            logger.debug("Status code detalhes: {}", response.statusCode());
 
             if (response.statusCode() == 200) {
-                TmdbDTO movie = objectMapper.readValue(response.body(), TmdbDTO.class);
-                movie.setMensagem("Detalhes encontrado com sucesso");
-                return movie;
+                logger.info("Detalhes do filme {} obtidos com sucesso", movieId);
+                return objectMapper.readValue(response.body(), TmdbDTO.class);
+            } else if (response.statusCode() == 404) {
+                logger.warn("Filme com ID {} não encontrado", movieId);
+                throw new ResourceNotFoundException("Filme não encontrado: " + movieId);
             } else {
-                return new TmdbDTO(404, "Detalhes não encontrado");
+                logger.error("Erro ao buscar detalhes do filme {}: status {}", movieId, response.statusCode());
+                throw new RuntimeException("Erro ao buscar detalhes do filme: status " + response.statusCode());
             }
         } catch (IOException | InterruptedException | URISyntaxException e) {
-            return new TmdbDTO(500, "Erro ao buscar detalhes: " + e.getMessage());
+            logger.error("Erro ao buscar detalhes do filme {}: {}", movieId, e.getMessage(), e);
+            throw new RuntimeException("Erro ao buscar detalhes do filme: " + e.getMessage(), e);
         }
     }
 
-
-    /**
-     * Retorna os filmes populares em uma determinada página.
-     * 
-     * @param page Número da página
-     * @return Lista de filmes populares
-     */
     public List<TmdbDTO> moviePopular(int page) {
+        logger.info("Buscando filmes populares na página {}", page);
         try {
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(new URI(tmdbApiUrl + "/movie/popular?language=pt-BR&page=" + page))
@@ -116,81 +113,64 @@ public class MovieService {
                     .build();
 
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            logger.debug("Status code filmes populares: {}", response.statusCode());
 
             if (response.statusCode() == 200) {
                 MovieSearchResponse searchResponse = objectMapper.readValue(response.body(), MovieSearchResponse.class);
-                return searchResponse.getResults();
+                logger.info("Encontrados {} filmes populares", searchResponse.results().size());
+                return searchResponse.results();
             } else {
-                return List.of(new TmdbDTO(404, "Detalhes não encontrado"));
+                logger.error("Erro ao buscar filmes populares: status {}", response.statusCode());
+                throw new RuntimeException("Erro ao buscar filmes populares: status " + response.statusCode());
             }
+
         } catch (IOException | InterruptedException | URISyntaxException e) {
-            return List.of(new TmdbDTO(500, "Erro ao buscar filmes populares: " + e.getMessage()));
+            logger.error("Erro ao buscar filmes populares: {}", e.getMessage(), e);
+            throw new RuntimeException("Erro ao buscar filmes populares: " + e.getMessage(), e);
         }
     }
 
-    /**
-     * Retorna todos os filmes favoritados por um usuário.
-     * 
-     * @param nickname Nickname do usuário
-     * @return DTO com a lista de favoritos e o status da operação
-     */
-    public FavoriteDTO getAllFavorites(String nickname) {
-        try {
-            List<FavoriteModel> result = favoriteRepository.findAllByNickname(nickname);
-            List<FavoriteModel> favoriteMovies = result.stream()
-                    .filter(FavoriteModel::isFavorite)
-                    .collect(Collectors.toList());
+    // public FavoriteDTO getAllFavorites(String nickname) {
+    //     try {
+    //         List<FavoriteModel> result = favoriteRepository.findAllByNickname(nickname);
+    //         List<FavoriteModel> favoriteMovies = result.stream()
+    //                 .filter(FavoriteModel::isFavorite)
+    //                 .collect(Collectors.toList());
     
-            if (!favoriteMovies.isEmpty()) {
-                FavoriteDTO favoriteDTO = new FavoriteDTO();
-                favoriteDTO.setFavoriteList(favoriteMovies);
-                favoriteDTO.setStatusCode(200);
-                favoriteDTO.setMensagem("Filmes favoritados encontrados");
-                return favoriteDTO;
-            } else {
-                return new FavoriteDTO(404, "Nenhum filme favoritado encontrado");
-            }
-        } catch (Exception e) {
-            return new FavoriteDTO(500, "Erro ao buscar filmes favoritados: " + e.getMessage());
-        }
+    //         if (!favoriteMovies.isEmpty()) {
+    //             FavoriteDTO favoriteDTO = new FavoriteDTO();
+    //             favoriteDTO.setFavoriteList(favoriteMovies);
+    //             favoriteDTO.setStatusCode(200);
+    //             favoriteDTO.setMensagem("Filmes favoritados encontrados");
+    //             return favoriteDTO;
+    //         } else {
+    //             return new FavoriteDTO(404, "Nenhum filme favoritado encontrado");
+    //         }
+    //     } catch (Exception e) {
+    //         return new FavoriteDTO(500, "Erro ao buscar filmes favoritados: " + e.getMessage());
+    //     }
+    // }
+
+    // public void toggleFavorite(FavoriteDTO favorite) {
+    //     Optional<FavoriteModel> optionalFavorite = favoriteRepository.findByMovieIdAndNickname(favorite.getMovieId(), favorite.getNickname());
+    //     FavoriteModel favoriteMovie = optionalFavorite.orElseGet(() -> new FavoriteModel());
+    //     favoriteMovie.setMovieId(favorite.getMovieId());
+    //     favoriteMovie.setNickname(favorite.getNickname());
+    //     favoriteMovie.setFavorite(favorite.isFavorite());
+    //     favoriteMovie.setTitle(favorite.getTitle());
+    //     favoriteRepository.save(favoriteMovie);
+
+    // }
+
+    public boolean isFavorite(String movieId, String email) {
+        logger.info("Verificando se o filme {} é favorito do usuário {}", movieId, email);
+
+        Optional<FavoriteModel> optionalFavorite = favoriteRepository.findByMovieIdAndEmail(movieId, email);
+        boolean result = optionalFavorite.map(FavoriteModel::isFavorite).orElse(false);
+
+        logger.debug("Resultado do favorite: {}", result);
+        return result;
     }
 
-    /**
-     * Adiciona ou remove um filme dos favoritos.
-     * 
-     * @param favorite DTO com informações do filme e do usuário
-     */
-    public void toggleFavorite(FavoriteDTO favorite) {
-        Optional<FavoriteModel> optionalFavorite = favoriteRepository.findByMovieIdAndNickname(favorite.getMovieId(), favorite.getNickname());
-        FavoriteModel favoriteMovie = optionalFavorite.orElseGet(() -> new FavoriteModel());
-        favoriteMovie.setMovieId(favorite.getMovieId());
-        favoriteMovie.setNickname(favorite.getNickname());
-        favoriteMovie.setFavorite(favorite.isFavorite());
-        favoriteMovie.setTitle(favorite.getTitle());
-        favoriteRepository.save(favoriteMovie);
-
-    }
-
-     /**
-     * Verifica se um filme é favoritado por um usuário.
-     * 
-     * @param movieId ID do filme
-     * @param nickname Nickname do usuário
-     * @return true se o filme for favoritado, false caso contrário
-     */
-    public boolean isFavorite(String movieId, String nickname) {
-        Optional<FavoriteModel> optionalFavorite = favoriteRepository.findByMovieIdAndNickname(movieId, nickname);
-        return optionalFavorite.map(FavoriteModel::isFavorite).orElse(false);
-    }
-
-    /**
-     * Classe auxiliar para processar a resposta da pesquisa de filmes.
-     */
-    private static class MovieSearchResponse {
-        private List<TmdbDTO> results;
-
-        public List<TmdbDTO> getResults() {
-            return results;
-        }
-    }
+    private static record MovieSearchResponse(List<TmdbDTO> results) {}
 }

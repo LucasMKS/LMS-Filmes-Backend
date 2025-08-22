@@ -3,7 +3,7 @@ package com.lucasm.lmsfilmes.repository;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 import com.lucasm.lmsfilmes.model.SerieModel;
 
@@ -11,7 +11,7 @@ import com.lucasm.lmsfilmes.model.SerieModel;
  * Repositório para acesso a dados de séries.
  */
 @Repository
-public interface SerieRepository extends JpaRepository<SerieModel, Long>  {
+public interface SerieRepository extends MongoRepository<SerieModel, String>  {
 
     // Busca todas as séries associadas a um nickname.
     List<SerieModel> findAllByNickname(String nickname);

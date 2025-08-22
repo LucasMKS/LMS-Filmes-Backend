@@ -4,7 +4,7 @@ package com.lucasm.lmsfilmes.repository;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
 import com.lucasm.lmsfilmes.model.MovieModel;
@@ -13,7 +13,7 @@ import com.lucasm.lmsfilmes.model.MovieModel;
  * Repositório para acesso a dados de filmes.
  */
 @Repository
-public interface MovieRepository extends JpaRepository<MovieModel, Long> {
+public interface MovieRepository extends MongoRepository<MovieModel, String> {
 
     // Busca todos os filmes associados a um nickname.
     List<MovieModel> findAllByNickname(String nickname);
