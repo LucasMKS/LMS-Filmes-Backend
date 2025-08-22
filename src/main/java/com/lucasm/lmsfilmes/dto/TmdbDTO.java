@@ -5,55 +5,39 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.lucasm.lmsfilmes.model.MovieModel;
 
-import lombok.Data;
-
-@Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class TmdbDTO {
+public record TmdbDTO(
+        String backdrop_path,
+        String homepage,
+        Long id,
+        String imdb_id,
+        String original_title,
+        String overview,
+        String poster_path,
+        String release_date,
+        int runtime,
+        String tagline,
+        String title,
+        double vote_average,
+        MovieModel movies,
+        List<TmdbDTO> results,
+        List<ProductionCompany> production_companies,
+        List<Genre> genres,
+        String media_type
+) {
 
-    private int statusCode;
-    private String error;
-    private String mensagem;
-    private String token;
-    private String refreshToken;
-    private String expirationTime;
-
-    private String backdrop_path;
-    private String homepage;
-    private Long id;
-    private String imdb_id;
-    private String original_title;
-    private String overview;
-    private String poster_path;
-    private String release_date;
-    private int runtime;
-    private String tagline;
-    private String title;
-    private double vote_average;
-    private MovieModel movies;
-    private List<TmdbDTO> results;
-    private List<ProductionCompany> production_companies;
-    private List<Genre> genres;
-    private String media_type = "movie";
-
-    @Data
-    public static class Genre {
-        private Long id;
-        private String name;
+    public TmdbDTO {
+        if (media_type == null) {
+            media_type = "movie";
+        }
     }
 
-    @Data
-    public static class ProductionCompany {
-        private String name;
-        private String origin_country;
-    }
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public record Genre(Long id, String name) {}
 
-    public TmdbDTO() {}
-
-    public TmdbDTO(int statusCode, String mensagem) {
-        this.statusCode = statusCode;
-        this.mensagem = mensagem;
-    }
-
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public record ProductionCompany(String name, String origin_country) {}
 }
