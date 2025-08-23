@@ -61,11 +61,11 @@ public class RateService {
         }
     }
 
-    public Movies ratedContent(String email) {
+    public List<Movies> ratedContent(String email) {
         try {
             List<Movies> result = movieRepository.findAllByEmail(email);
             if (!result.isEmpty()) {
-                return result.get(0);
+                return result;
             }
         } catch (Exception e) {
             logger.error("Erro ao buscar filmes avaliados para o usuário {}: {}", email, e.getMessage(), e);
