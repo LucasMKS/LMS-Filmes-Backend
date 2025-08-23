@@ -12,13 +12,8 @@ public class FavoriteSerie {
     
     private String serieId;
 
-    private String name;
-    
-    private String nickname;
+    private String email;
 
     private boolean favorite;
-
-    public boolean isFavorite() {
-        return favorite;
-    }
+    
 }

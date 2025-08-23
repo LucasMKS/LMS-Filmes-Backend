@@ -11,23 +11,18 @@ import org.springframework.stereotype.Service;
 
 import com.lucasm.lmsfilmes.exceptions.MovieServiceException;
 import com.lucasm.lmsfilmes.model.Movies;
-import com.lucasm.lmsfilmes.model.Series;
 import com.lucasm.lmsfilmes.repository.MovieRepository;
-import com.lucasm.lmsfilmes.repository.SerieRepository;
 
 /**
  * Serviço para gerenciar avaliações de filmes e séries.
  */
 @Service
-public class RateService {
+public class RateMovieService {
 
-    private static final Logger logger = LoggerFactory.getLogger(RateService.class);
+    private static final Logger logger = LoggerFactory.getLogger(RateMovieService.class);
 
     @Autowired
     private MovieRepository movieRepository;
-
-    @Autowired
-    private SerieRepository serieRepository;
     
     public Movies rateMovie(String movieId, String email, String rating, String title, String poster_path) {
         try {
@@ -79,55 +74,6 @@ public class RateService {
             return existing;
         } catch (Exception e) {
             logger.error("Erro ao atualizar avaliação do filme: {}", e.getMessage(), e);
-        }
-        return null;
-    }
-
-    public Series rateSerie(String serieId, String email, String rating, String title, String poster_path) {
-        logger.info("Usuário {} avaliando serie {}(id:{}) com nota {}", email, title, serieId, rating);
-
-        try {
-            Optional<Series> optionalSerie = serieRepository.findBySerieIdAndEmail(serieId, email);
-            if (optionalSerie.isPresent()) {
-                Series existing = optionalSerie.get();
-                updateRateSerie(rating, existing);
-                logger.warn("Usuário {} já avaliou a série {}(id:{}). Nota atualizada: {}", email, title, serieId, existing.getMyVote());
-                return existing;
-            }
-
-            Series serieModel = new Series();
-            serieModel.setName(title);
-            serieModel.setSerieId(serieId);
-            serieModel.setMyVote(rating);
-            serieModel.setEmail(email);
-            serieModel.setPoster_path(poster_path);
-            serieRepository.save(serieModel);
-            return serieModel;
-        } catch (Exception e) {
-            logger.error("Erro ao avaliar série: {}", e.getMessage(), e);
-        }
-        return null;
-    }
-
-    public Series searchRatedSeries(String email) {
-        try {
-            List<Series> result = serieRepository.findAllByEmail(email);
-            if (!result.isEmpty()) {
-                return result.get(0);
-            }
-        } catch (Exception e) {
-            logger.error("Erro ao buscar séries avaliadas para o usuário {}: {}", email, e.getMessage(), e);
-        }
-        return null;
-    }
-
-     public Series updateRateSerie(String rating, Series existing) {
-        try {
-            existing.setMyVote(rating);
-            serieRepository.save(existing);
-            return existing;
-        } catch (Exception e) {
-            logger.error("Erro ao atualizar avaliação da série: {}", e.getMessage(), e);
         }
         return null;
     }

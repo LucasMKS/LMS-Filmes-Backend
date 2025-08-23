@@ -12,7 +12,7 @@ public class Series {
 
     private String id;
 
-    private String name;
+    private String title;
 
     private String serieId;
 
@@ -24,7 +24,7 @@ public class Series {
 
     private Date created_at;
 
-    protected void onCreate() {
+    public void onCreate() {
         this.created_at = new Date();
     }
 }

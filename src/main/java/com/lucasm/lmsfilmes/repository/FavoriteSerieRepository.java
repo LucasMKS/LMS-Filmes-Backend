@@ -13,12 +13,12 @@ import java.util.Optional;
 @Repository
 public interface FavoriteSerieRepository extends MongoRepository<FavoriteSerie, String> {
 
-    // Busca todas as séries favoritas associadas a um nickname.
-    List<FavoriteSerie> findAllByNickname(String nickname);
+    // Busca todas as séries favoritas associadas a um email.
+    List<FavoriteSerie> findAllByEmail(String email);
 
-    // Busca uma série favorita específica por ID e nickname.
-    Optional<FavoriteSerie> findBySerieIdAndNickname(String serieId, String nickname);
+    // Busca uma série favorita específica por ID e email.
+    Optional<FavoriteSerie> findBySerieIdAndEmail(String serieId, String email);
 
-    // Busca todas as séries favoritas associadas a um nickname e um estado de favorito.
-    List<FavoriteSerie> findByNicknameAndFavorite(String nickname, boolean favorite);
+    // Busca todas as séries favoritas associadas a um email e um estado de favorito.
+    List<FavoriteSerie> findByEmailAndFavorite(String email, boolean favorite);
 }

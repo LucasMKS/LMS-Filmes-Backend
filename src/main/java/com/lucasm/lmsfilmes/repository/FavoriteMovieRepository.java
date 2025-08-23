@@ -12,7 +12,7 @@ import java.util.Optional;
  * Repositório para acesso a dados de filmes favoritos.
  */
 @Repository
-public interface FavoriteRepository extends MongoRepository<FavoriteMovie, String> {
+public interface FavoriteMovieRepository extends MongoRepository<FavoriteMovie, String> {
 
     // Busca todos os filmes favoritos associados a um nickname.
     List<FavoriteMovie> findAllByEmail(String email);

@@ -14,13 +14,6 @@ import lombok.NoArgsConstructor;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SeriesDTO {
  
-    private int statusCode;
-    private String error;
-    private String mensagem;
-    private String token;
-    private String refreshToken;
-    private String expirationTime;
-
     private String backdrop_path;
     private List<CreatedByDTO> created_by;
     private String first_air_date;
@@ -68,12 +61,6 @@ public class SeriesDTO {
         private String logo_path;
         private String origin_country;
     }
-
-    public SeriesDTO(String mensagem) {
-        this.mensagem = mensagem;
-    }
-
-    
 
 }
 

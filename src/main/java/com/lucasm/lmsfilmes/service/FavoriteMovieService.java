@@ -10,20 +10,20 @@ import org.springframework.stereotype.Service;
 
 import com.lucasm.lmsfilmes.exceptions.ResourceNotFoundException;
 import com.lucasm.lmsfilmes.model.FavoriteMovie;
-import com.lucasm.lmsfilmes.repository.FavoriteRepository;
+import com.lucasm.lmsfilmes.repository.FavoriteMovieRepository;
 
 @Service
-public class FavoriteService {
+public class FavoriteMovieService {
 
-    private static final Logger logger = LoggerFactory.getLogger(FavoriteService.class);
+    private static final Logger logger = LoggerFactory.getLogger(FavoriteMovieService.class);
 
-    private final FavoriteRepository favoriteRepository;
+    private final FavoriteMovieRepository favoriteRepository;
 
-    public FavoriteService(FavoriteRepository favoriteRepository) {
+    public FavoriteMovieService(FavoriteMovieRepository favoriteRepository) {
         this.favoriteRepository = favoriteRepository;
     }
 
-    public void toggleFavorite(String movieId, String email) {
+    public void toggleFavoriteMovie(String movieId, String email) {
         Optional<FavoriteMovie> optionalFavorite = favoriteRepository.findByMovieIdAndEmail(movieId, email);
         FavoriteMovie favoriteMovie = optionalFavorite.orElseGet(() -> new FavoriteMovie());
         favoriteMovie.setMovieId(movieId);
@@ -33,7 +33,7 @@ public class FavoriteService {
         logger.info("Filme {} favorito atualizado para {} pelo usuário {}", movieId, favoriteMovie.isFavorite(), email);
     }
 
-    public boolean isFavorite(String movieId, String email) {
+    public boolean isFavoriteMovie(String movieId, String email) {
         logger.info("Verificando se o filme {} é favorito do usuário {}", movieId, email);
 
         Optional<FavoriteMovie> optionalFavorite = favoriteRepository.findByMovieIdAndEmail(movieId, email);
@@ -43,7 +43,7 @@ public class FavoriteService {
         return result;
     }
 
-    public List<FavoriteMovie> getAllFavorites(String email) {
+    public List<FavoriteMovie> getAllFavoritesMovies(String email) {
         logger.info("Buscando todos os filmes favoritos do usuário {}", email);
         List<FavoriteMovie> allFavorites = favoriteRepository.findAllByEmail(email)
                 .stream()
