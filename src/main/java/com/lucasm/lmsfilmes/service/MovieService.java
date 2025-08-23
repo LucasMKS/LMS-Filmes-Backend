@@ -3,8 +3,6 @@ package com.lucasm.lmsfilmes.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lucasm.lmsfilmes.dto.TmdbDTO;
 import com.lucasm.lmsfilmes.exceptions.ResourceNotFoundException;
-import com.lucasm.lmsfilmes.model.FavoriteMovie;
-import com.lucasm.lmsfilmes.repository.FavoriteRepository;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +17,6 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Optional;
 import java.net.URLEncoder;
 
 /**
