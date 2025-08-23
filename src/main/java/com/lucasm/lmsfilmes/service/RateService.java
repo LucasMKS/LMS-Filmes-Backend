@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.lucasm.lmsfilmes.dto.RateDTO;
 import com.lucasm.lmsfilmes.exceptions.MovieServiceException;
 import com.lucasm.lmsfilmes.model.Movies;
 import com.lucasm.lmsfilmes.model.Series;
@@ -37,7 +36,7 @@ public class RateService {
             Optional<Movies> optionalMovie = movieRepository.findByMovieIdAndEmail(movieId, email);
             if (optionalMovie.isPresent()) {
                 Movies existing = optionalMovie.get();
-                updateRate(rating, existing);
+                updateRateMovie(rating, existing);
                 logger.warn("Usuário {} já avaliou o filme {}(id:{}). Nota existente: {}", email, title, movieId, existing.getMyVote());
                 return existing; // Retorna a nota existente
             }
@@ -61,7 +60,7 @@ public class RateService {
         }
     }
 
-    public List<Movies> ratedContent(String email) {
+    public List<Movies> searchRatedMovies(String email) {
         try {
             List<Movies> result = movieRepository.findAllByEmail(email);
             if (!result.isEmpty()) {
@@ -73,7 +72,7 @@ public class RateService {
         return null;
     }
          
-    public Movies updateRate(String rating, Movies existing) {
+    public Movies updateRateMovie(String rating, Movies existing) {
         try {
             existing.setMyVote(rating);
             movieRepository.save(existing);
@@ -84,73 +83,52 @@ public class RateService {
         return null;
     }
 
-    // public RateDTO ratingSeries(RateDTO ratingDTO) {
-    //     RateDTO rateDTO = new RateDTO();
-    //     try {
-    //         if (serieRepository.findBySerieIdAndNickname(ratingDTO.getSerieId(), ratingDTO.getNickname()).isPresent()) {
-    //             rateDTO.setStatusCode(400);
-    //             rateDTO.setError("Você já avaliou esta série.");
-    //             return rateDTO;
-    //         }
+    public Series rateSerie(String serieId, String email, String rating, String title, String poster_path) {
+        logger.info("Usuário {} avaliando serie {}(id:{}) com nota {}", email, title, serieId, rating);
 
-    //         Series serieModel = new Series();
-    //         serieModel.setName(ratingDTO.getName());
-    //         serieModel.setSerieId(ratingDTO.getSerieId());
-    //         serieModel.setMyVote(ratingDTO.getRating());
-    //         serieModel.setNickname(ratingDTO.getNickname());
-    //         serieModel.setPoster_path(ratingDTO.getPoster_path());
+        try {
+            Optional<Series> optionalSerie = serieRepository.findBySerieIdAndEmail(serieId, email);
+            if (optionalSerie.isPresent()) {
+                Series existing = optionalSerie.get();
+                updateRateSerie(rating, existing);
+                logger.warn("Usuário {} já avaliou a série {}(id:{}). Nota atualizada: {}", email, title, serieId, existing.getMyVote());
+                return existing;
+            }
 
-    //         // Salvar no banco de dados
-    //         serieRepository.save(serieModel);
+            Series serieModel = new Series();
+            serieModel.setName(title);
+            serieModel.setSerieId(serieId);
+            serieModel.setMyVote(rating);
+            serieModel.setEmail(email);
+            serieModel.setPoster_path(poster_path);
+            serieRepository.save(serieModel);
+            return serieModel;
+        } catch (Exception e) {
+            logger.error("Erro ao avaliar série: {}", e.getMessage(), e);
+        }
+        return null;
+    }
 
-    //         rateDTO.setStatusCode(200);
-    //         rateDTO.setMensagem("Série avaliada com sucesso. Nota: " + ratingDTO.getRating());
-    //         return rateDTO;
-    //     } catch (Exception e) {
-    //         rateDTO.setStatusCode(500);
-    //         rateDTO.setError("Erro ao salvar avaliação: " + e.getMessage());
-    //         return rateDTO;
-    //     }
-    // }
-    
-    // public RateDTO searchRatedSeries(String nickname) {
-    //     RateDTO rateDTO = new RateDTO();
-    //     try {
-    //         List<Series> result = serieRepository.findAllByNickname(nickname);
-    //         if (!result.isEmpty()) {
-    //             rateDTO.setSerieList(result);
-    //             rateDTO.setStatusCode(200);
-    //             rateDTO.setMensagem("Séries avaliadas encontradas para o nickname: " + nickname);
-    //         } else {
-    //             rateDTO.setStatusCode(404);
-    //             rateDTO.setError("Nenhuma série avaliada encontrada para o nickname: " + nickname);
-    //         }
-    //     } catch (Exception e) {
-    //         rateDTO.setStatusCode(500);
-    //         rateDTO.setError("Erro ao buscar séries avaliadas: " + e.getMessage());
-    //     }
-    //     return rateDTO;
-    // }
+    public Series searchRatedSeries(String email) {
+        try {
+            List<Series> result = serieRepository.findAllByEmail(email);
+            if (!result.isEmpty()) {
+                return result.get(0);
+            }
+        } catch (Exception e) {
+            logger.error("Erro ao buscar séries avaliadas para o usuário {}: {}", email, e.getMessage(), e);
+        }
+        return null;
+    }
 
-    // public RateDTO updateRatingSeries(RateDTO ratingDTO) {
-    //     RateDTO rateDTO = new RateDTO();
-    //     try {
-    //         Optional<Series> serieOptional = serieRepository.findBySerieIdAndNickname(ratingDTO.getSerieId(), ratingDTO.getNickname());
-    //         if (serieOptional.isPresent()) {
-    //             Series serieModel = serieOptional.get();
-    //             serieModel.setMyVote(ratingDTO.getRating());
-    //             serieRepository.save(serieModel);
-
-    //             rateDTO.setStatusCode(200);
-    //             rateDTO.setMensagem("Série atualizada com sucesso. Nova nota: " + ratingDTO.getRating());
-    //         } else {
-    //             rateDTO.setStatusCode(404);
-    //             rateDTO.setError("Série não encontrada para atualização.");
-    //         }
-    //     } catch (Exception e) {
-    //         rateDTO.setStatusCode(500);
-    //         rateDTO.setError("Erro ao atualizar avaliação: " + e.getMessage());
-    //     }
-    //     return rateDTO;
-    // }
+     public Series updateRateSerie(String rating, Series existing) {
+        try {
+            existing.setMyVote(rating);
+            serieRepository.save(existing);
+            return existing;
+        } catch (Exception e) {
+            logger.error("Erro ao atualizar avaliação da série: {}", e.getMessage(), e);
+        }
+        return null;
+    }
 }

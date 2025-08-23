@@ -13,9 +13,9 @@ import com.lucasm.lmsfilmes.model.Series;
 @Repository
 public interface SerieRepository extends MongoRepository<Series, String>  {
 
-    // Busca todas as séries associadas a um nickname.
-    List<Series> findAllByNickname(String nickname);
+    // Busca todas as séries associadas a um email.
+    List<Series> findAllByEmail(String email);
 
-    // Busca uma série específica por ID e nickname.
-    Optional<Series> findBySerieIdAndNickname(String serieId, String nickname);
+    // Busca uma série específica por ID e email.
+    Optional<Series> findBySerieIdAndEmail(String serieId, String email);
 }

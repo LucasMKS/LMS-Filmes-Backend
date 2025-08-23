@@ -18,7 +18,7 @@ public class Series {
 
     private String myVote;
 
-    private String nickname;
+    private String email;
 
     private String poster_path;
 

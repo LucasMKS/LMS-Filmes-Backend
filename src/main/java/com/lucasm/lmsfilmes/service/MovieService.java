@@ -32,14 +32,12 @@ public class MovieService {
 
     private final HttpClient httpClient;
     private final ObjectMapper objectMapper;
-    private final FavoriteRepository favoriteRepository;
     private final String tmdbApiUrl;
     private final String apiKey;
 
-    public MovieService(ObjectMapper objectMapper, FavoriteRepository favoriteRepository, @Value("${tmdb.api.url}") String tmdbApiUrl, @Value("${tmdb.api.key}") String apiKey) {
+    public MovieService(ObjectMapper objectMapper, @Value("${tmdb.api.url}") String tmdbApiUrl, @Value("${tmdb.api.key}") String apiKey) {
         this.httpClient = HttpClient.newHttpClient();
         this.objectMapper = objectMapper;
-        this.favoriteRepository = favoriteRepository;
         this.tmdbApiUrl = tmdbApiUrl;
         this.apiKey = apiKey;
     }

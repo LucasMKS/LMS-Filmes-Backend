@@ -7,14 +7,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.lucasm.lmsfilmes.dto.RateDTO;
 import com.lucasm.lmsfilmes.model.Movies;
+import com.lucasm.lmsfilmes.model.Series;
 import com.lucasm.lmsfilmes.service.RateService;
 
 /**
@@ -40,21 +38,25 @@ public class RateController {
     public ResponseEntity<List<Movies>> searchMovies() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        List<Movies> movies = rateService.ratedContent(email);
+        List<Movies> movies = rateService.searchRatedMovies(email);
         return ResponseEntity.ok(movies);
     }
 
-    // // Método para avaliar uma série.
-    // @PostMapping("/rate/s/save")
-    // public ResponseEntity<RateDTO> ratingSeries(@RequestBody RateDTO ratingDTO) {
-    //     return ResponseEntity.ok(rateService.ratingSeries(ratingDTO));
-    // }
+    // Método para avaliar uma série.
+    @PostMapping("/s/save")
+    public ResponseEntity<Series> ratingSeries(@RequestParam String serieId, @RequestParam String rating, @RequestParam String title, @RequestParam String poster_path) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
 
-    // // Método para obter as avaliações de uma série.
-    // @GetMapping("/rate/s/ratedcontent")
-    // public ResponseEntity<RateDTO> searchRatedSeries(@RequestParam String nickname) {
-    //     RateDTO movies = rateService.searchRatedSeries(nickname);
-    //     return ResponseEntity.ok(movies);
-    // }
+        return ResponseEntity.ok(rateService.rateSerie(serieId, email, rating, title, poster_path));
+    }
+
+    // Método para obter as avaliações de uma série.
+    @GetMapping("/s/rated")
+    public ResponseEntity<Series> searchRatedSeries() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        Series series = rateService.searchRatedSeries(email);
+        return ResponseEntity.ok(series);
+    }
 
 }
