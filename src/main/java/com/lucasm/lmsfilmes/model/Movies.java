@@ -8,7 +8,7 @@ import lombok.Data;
  * Modelo de dados para filmes.
  */
 @Data
-public class MovieModel {
+public class Movies {
 
     private String id;
 
@@ -18,13 +18,13 @@ public class MovieModel {
 
     private String myVote;
 
-    private String nickname;
+    private String email;
 
     private String poster_path;
 
-    private Date created_at;
+    private Date created_at ;
 
-    protected void onCreate() {
+    public void onCreate() {
         this.created_at = new Date();
     }
 }

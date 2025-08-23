@@ -7,7 +7,7 @@ import lombok.Data;
  */
 
 @Data
-public class FavoriteSerieModel {
+public class FavoriteSerie {
     private String id;
     
     private String serieId;

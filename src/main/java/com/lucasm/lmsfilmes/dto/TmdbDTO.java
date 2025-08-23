@@ -3,7 +3,7 @@ package com.lucasm.lmsfilmes.dto;
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.lucasm.lmsfilmes.model.MovieModel;
+import com.lucasm.lmsfilmes.model.Movies;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -20,7 +20,7 @@ public record TmdbDTO(
         String tagline,
         String title,
         double vote_average,
-        MovieModel movies,
+        Movies movies,
         List<TmdbDTO> results,
         List<ProductionCompany> production_companies,
         List<Genre> genres,

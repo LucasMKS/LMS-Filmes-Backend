@@ -3,7 +3,7 @@ package com.lucasm.lmsfilmes.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lucasm.lmsfilmes.dto.FavoriteSerieDTO;
 import com.lucasm.lmsfilmes.dto.SeriesDTO;
-import com.lucasm.lmsfilmes.model.FavoriteSerieModel;
+import com.lucasm.lmsfilmes.model.FavoriteSerie;
 import com.lucasm.lmsfilmes.repository.FavoriteSerieRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -138,9 +138,9 @@ public class SerieService {
      */
     public FavoriteSerieDTO getAllSeriesFavorites(String nickname) {
         try {
-            List<FavoriteSerieModel> result = favoriteSerieRepository.findAllByNickname(nickname);
-            List<FavoriteSerieModel> favoriteSeries = result.stream()
-                .filter(FavoriteSerieModel::isFavorite)
+            List<FavoriteSerie> result = favoriteSerieRepository.findAllByNickname(nickname);
+            List<FavoriteSerie> favoriteSeries = result.stream()
+                .filter(FavoriteSerie::isFavorite)
                 .collect(Collectors.toList());
 
             if (!favoriteSeries.isEmpty()) {
@@ -160,9 +160,9 @@ public class SerieService {
      * @param favoriteDTO DTO com informações sobre a série favorita
      */
     public void toggleSerieFavorite(FavoriteSerieDTO favoriteDTO) {
-        FavoriteSerieModel favoriteSerie = favoriteSerieRepository
+        FavoriteSerie favoriteSerie = favoriteSerieRepository
             .findBySerieIdAndNickname(favoriteDTO.getSerieId(), favoriteDTO.getNickname())
-            .orElse(new FavoriteSerieModel());
+            .orElse(new FavoriteSerie());
 
         favoriteSerie.setSerieId(favoriteDTO.getSerieId());
         favoriteSerie.setNickname(favoriteDTO.getNickname());
@@ -182,7 +182,7 @@ public class SerieService {
     public boolean isFavorite(String serieId, String nickname) {
         return favoriteSerieRepository
             .findBySerieIdAndNickname(serieId, nickname)
-            .map(FavoriteSerieModel::isFavorite)
+            .map(FavoriteSerie::isFavorite)
             .orElse(false);
     }
 

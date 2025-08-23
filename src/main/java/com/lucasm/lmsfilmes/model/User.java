@@ -10,7 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import lombok.Data;
 
 @Data
-public class UserModel implements UserDetails {
+public class User implements UserDetails {
     private String id;
 
     private String name;

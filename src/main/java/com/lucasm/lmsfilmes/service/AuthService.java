@@ -11,7 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.lucasm.lmsfilmes.dto.AuthDTO;
-import com.lucasm.lmsfilmes.model.UserModel;
+import com.lucasm.lmsfilmes.model.User;
 import com.lucasm.lmsfilmes.repository.UserRepository;
 
 @Service
@@ -46,13 +46,13 @@ public class AuthService {
             }
 
             // Criação de um novo usuário
-            UserModel ourUser = new UserModel();
+            User ourUser = new User();
             ourUser.setName(registrationRequest.name());
             ourUser.setEmail(registrationRequest.email());
             ourUser.setNickname(registrationRequest.nickname());
             ourUser.setPassword(passwordEncoder.encode(registrationRequest.password()));
 
-            UserModel savedUser = usersRepo.save(ourUser);
+            User savedUser = usersRepo.save(ourUser);
             var jwt = jwtUtils.generateToken(savedUser);
         return jwt;
     }

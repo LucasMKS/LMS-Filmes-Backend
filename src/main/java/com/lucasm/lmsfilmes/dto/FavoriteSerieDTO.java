@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.lucasm.lmsfilmes.model.FavoriteSerieModel;
+import com.lucasm.lmsfilmes.model.FavoriteSerie;
 
 import lombok.Data;
 
@@ -21,8 +21,8 @@ public class FavoriteSerieDTO {
     private String name;
     private String nickname;
     private boolean favorite;
-    private FavoriteSerieModel favoriteSerieModel;
-    private List<FavoriteSerieModel> favoriteSerieList;
+    private FavoriteSerie favoriteSerieModel;
+    private List<FavoriteSerie> favoriteSerieList;
 
     // Construtor padrão
     public FavoriteSerieDTO() {}
@@ -33,7 +33,7 @@ public class FavoriteSerieDTO {
     }
 
     // Construtor com parâmetros para inicializar a lista de favoritos, status e mensagem
-    public FavoriteSerieDTO(List<FavoriteSerieModel> favoriteSerieList, int statusCode, String mensagem) {
+    public FavoriteSerieDTO(List<FavoriteSerie> favoriteSerieList, int statusCode, String mensagem) {
         this.favoriteSerieList = favoriteSerieList;
         this.statusCode = statusCode;
         this.mensagem = mensagem;

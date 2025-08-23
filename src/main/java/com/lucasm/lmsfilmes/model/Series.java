@@ -8,7 +8,7 @@ import lombok.Data;
  * Modelo de dados para séries.
  */
 @Data
-public class SerieModel {
+public class Series {
 
     private String id;
 

@@ -3,7 +3,7 @@ package com.lucasm.lmsfilmes.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lucasm.lmsfilmes.dto.TmdbDTO;
 import com.lucasm.lmsfilmes.exceptions.ResourceNotFoundException;
-import com.lucasm.lmsfilmes.model.FavoriteModel;
+import com.lucasm.lmsfilmes.model.FavoriteMovie;
 import com.lucasm.lmsfilmes.repository.FavoriteRepository;
 
 import org.slf4j.Logger;
@@ -128,48 +128,6 @@ public class MovieService {
             logger.error("Erro ao buscar filmes populares: {}", e.getMessage(), e);
             throw new RuntimeException("Erro ao buscar filmes populares: " + e.getMessage(), e);
         }
-    }
-
-    // public FavoriteDTO getAllFavorites(String nickname) {
-    //     try {
-    //         List<FavoriteModel> result = favoriteRepository.findAllByNickname(nickname);
-    //         List<FavoriteModel> favoriteMovies = result.stream()
-    //                 .filter(FavoriteModel::isFavorite)
-    //                 .collect(Collectors.toList());
-    
-    //         if (!favoriteMovies.isEmpty()) {
-    //             FavoriteDTO favoriteDTO = new FavoriteDTO();
-    //             favoriteDTO.setFavoriteList(favoriteMovies);
-    //             favoriteDTO.setStatusCode(200);
-    //             favoriteDTO.setMensagem("Filmes favoritados encontrados");
-    //             return favoriteDTO;
-    //         } else {
-    //             return new FavoriteDTO(404, "Nenhum filme favoritado encontrado");
-    //         }
-    //     } catch (Exception e) {
-    //         return new FavoriteDTO(500, "Erro ao buscar filmes favoritados: " + e.getMessage());
-    //     }
-    // }
-
-    // public void toggleFavorite(FavoriteDTO favorite) {
-    //     Optional<FavoriteModel> optionalFavorite = favoriteRepository.findByMovieIdAndNickname(favorite.getMovieId(), favorite.getNickname());
-    //     FavoriteModel favoriteMovie = optionalFavorite.orElseGet(() -> new FavoriteModel());
-    //     favoriteMovie.setMovieId(favorite.getMovieId());
-    //     favoriteMovie.setNickname(favorite.getNickname());
-    //     favoriteMovie.setFavorite(favorite.isFavorite());
-    //     favoriteMovie.setTitle(favorite.getTitle());
-    //     favoriteRepository.save(favoriteMovie);
-
-    // }
-
-    public boolean isFavorite(String movieId, String email) {
-        logger.info("Verificando se o filme {} é favorito do usuário {}", movieId, email);
-
-        Optional<FavoriteModel> optionalFavorite = favoriteRepository.findByMovieIdAndEmail(movieId, email);
-        boolean result = optionalFavorite.map(FavoriteModel::isFavorite).orElse(false);
-
-        logger.debug("Resultado do favorite: {}", result);
-        return result;
     }
 
     private static record MovieSearchResponse(List<TmdbDTO> results) {}
