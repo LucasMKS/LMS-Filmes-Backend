@@ -121,5 +121,86 @@ public class SerieService {
         }
     }
 
+    public List<SeriesDTO> airingTodaySeries(int page) {
+        logger.info("Buscando séries sendo exibidas hoje na página {}", page);
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(new URI(tmdbApiUrl + "/tv/airing_today?language=pt-BR&page=" +  page + "&timezone=America%2FSao_Paulo"))
+                    .header("Authorization", "Bearer " + apiKey)
+                    .header("Accept", "application/json")
+                    .GET()
+                    .build();
+
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            logger.debug("Status code séries sendo exibidas hoje: {}", response.statusCode());
+
+            if (response.statusCode() == 200) {
+                SerieSearchResponse searchResponse = objectMapper.readValue(response.body(), SerieSearchResponse.class);
+                logger.info("Encontrados {} séries sendo exibidas hoje", searchResponse.results().size());
+                return searchResponse.results();
+            } else {
+                logger.error("Erro ao buscar séries sendo exibidas hoje: {}", response.body());
+                throw new RuntimeException("Erro ao buscar séries sendo exibidas hoje: " + response.body());
+            }
+        } catch (IOException | InterruptedException | URISyntaxException e) {
+            logger.error("Erro ao buscar séries sendo exibidas hoje: {}", e.getMessage(), e);
+            throw new RuntimeException("Erro ao buscar séries sendo exibidas hoje: " + e.getMessage(), e);
+        }
+    }
+
+    public List<SeriesDTO> onTheAirSeries(int page) {
+        logger.info("Buscando séries no ar na página {}", page);
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(new URI(tmdbApiUrl + "/tv/on_the_air?language=pt-BR&page=" + page + "&timezone=America%2FSao_Paulo"))
+                    .header("Authorization", "Bearer " + apiKey)
+                    .header("Accept", "application/json")
+                    .GET()
+                    .build();
+
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            logger.debug("Status code séries no ar: {}", response.statusCode());
+
+            if (response.statusCode() == 200) {
+                SerieSearchResponse searchResponse = objectMapper.readValue(response.body(), SerieSearchResponse.class);
+                logger.info("Encontrados {} séries no ar", searchResponse.results().size());
+                return searchResponse.results();
+            } else {
+                logger.error("Erro ao buscar séries no ar: {}", response.body());
+                throw new RuntimeException("Erro ao buscar séries no ar: " + response.body());
+            }
+        } catch (IOException | InterruptedException | URISyntaxException e) {
+            logger.error("Erro ao buscar séries no ar: {}", e.getMessage(), e);
+            throw new RuntimeException("Erro ao buscar séries no ar: " + e.getMessage(), e);
+        }
+    }
+
+    public List<SeriesDTO> topRatedSeries(int page) {
+        logger.info("Buscando séries mais bem avaliadas na página {}", page);
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(new URI(tmdbApiUrl + "/tv/top_rated?language=pt-BR&page=" + page))
+                    .header("Authorization", "Bearer " + apiKey)
+                    .header("Accept", "application/json")
+                    .GET()
+                    .build();
+
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            logger.debug("Status code séries mais bem avaliadas: {}", response.statusCode());
+
+            if (response.statusCode() == 200) {
+                SerieSearchResponse searchResponse = objectMapper.readValue(response.body(), SerieSearchResponse.class);
+                logger.info("Encontrados {} séries mais bem avaliadas", searchResponse.results().size());
+                return searchResponse.results();
+            } else {
+                logger.error("Erro ao buscar séries mais bem avaliadas: {}", response.body());
+                throw new RuntimeException("Erro ao buscar séries mais bem avaliadas: " + response.body());
+            }
+        } catch (IOException | InterruptedException | URISyntaxException e) {
+            logger.error("Erro ao buscar séries mais bem avaliadas: {}", e.getMessage(), e);
+            throw new RuntimeException("Erro ao buscar séries mais bem avaliadas: " + e.getMessage(), e);
+        }
+    }
+
     private static record SerieSearchResponse(List<SeriesDTO> results) {}
 }

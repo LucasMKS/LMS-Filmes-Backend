@@ -24,14 +24,14 @@ public class RateSerieService {
     @Autowired
     private SerieRepository serieRepository;
 
-    public Series rateSerie(String serieId, String email, String rating, String title, String poster_path) {
+    public Series rateSerie(String serieId, String email, String rating, String title, String poster_path, String comment) {
         try {
-            logger.info("Usuário {} avaliando série {}(id:{}) com nota {}", email, title, serieId, rating);
+            logger.info("Usuário {} avaliando série {}(id:{}) com nota {} e comentário: {}", email, title, serieId, rating, comment != null ? "sim" : "não");
 
             Optional<Series> optionalSerie = serieRepository.findBySerieIdAndEmail(serieId, email);
             if (optionalSerie.isPresent()) {
                 Series existing = optionalSerie.get();
-                updateRateSerie(rating, existing);
+                updateRateSerie(rating, comment, existing);
                 logger.warn("Usuário {} já avaliou a série {}(id:{}). Nota existente: {}", email, title, serieId, existing.getMyVote());
                 return existing; // Retorna a nota existente
             }
@@ -41,6 +41,7 @@ public class RateSerieService {
             serie.setSerieId(serieId);
             serie.setEmail(email);
             serie.setMyVote(rating);
+            serie.setComment(comment);
             serie.setTitle(title);
             serie.setPoster_path(poster_path);
             serie.onCreate();
@@ -67,9 +68,10 @@ public class RateSerieService {
         return null;
     }
 
-    public Series updateRateSerie(String rating, Series existing) {
+    public Series updateRateSerie(String rating, String comment, Series existing) {
         try {
             existing.setMyVote(rating);
+            existing.setComment(comment);
             serieRepository.save(existing);
             return existing;
         } catch (Exception e) {

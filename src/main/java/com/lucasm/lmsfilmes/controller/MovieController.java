@@ -44,4 +44,25 @@ public class MovieController {
         List<TmdbDTO> movies = movieService.moviePopular(page);
         return ResponseEntity.ok(movies);
     }
+
+    // Método para obter filmes em cartaz.
+    @GetMapping("/now-playing")
+    public ResponseEntity<List<TmdbDTO>> nowPlayingMovies(@RequestParam(defaultValue = "1") int page) {
+        List<TmdbDTO> movies = movieService.nowPlayingMovies(page);
+        return ResponseEntity.ok(movies);
+    }
+
+    // Método para obter filmes mais bem avaliados.
+    @GetMapping("/top-rated")
+    public ResponseEntity<List<TmdbDTO>> topRatedMovies(@RequestParam(defaultValue = "1") int page) {
+        List<TmdbDTO> movies = movieService.topRatedMovies(page);
+        return ResponseEntity.ok(movies);
+    }
+
+    // Método para obter filmes em breve.
+    @GetMapping("/upcoming")
+    public ResponseEntity<List<TmdbDTO>> upcomingMovies(@RequestParam(defaultValue = "1") int page) {
+        List<TmdbDTO> movies = movieService.upcomingMovies(page);
+        return ResponseEntity.ok(movies);
+    }
 }

@@ -2,6 +2,8 @@ package com.lucasm.lmsfilmes.controller;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,8 +17,10 @@ import com.lucasm.lmsfilmes.model.FavoriteMovie;
 import com.lucasm.lmsfilmes.service.FavoriteMovieService;
 
 @RestController
-@RequestMapping("/favorite/movie")
+@RequestMapping("/favorite/movies")
 public class FavoriteMovieController {
+
+    private static final Logger logger = LoggerFactory.getLogger(FavoriteMovieController.class);
 
     @Autowired
     private FavoriteMovieService favoriteService;
@@ -25,6 +29,7 @@ public class FavoriteMovieController {
     @PostMapping("/")
     public ResponseEntity<String> toggleFavoriteMovie(@RequestParam String movieId) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        logger.info("CONTROLLER FILME: Recebida requisição para toggle favorito - MovieID: {}, Email: {}", movieId, email);
 
         favoriteService.toggleFavoriteMovie(movieId, email);
         return ResponseEntity.ok("Favorite status updated");

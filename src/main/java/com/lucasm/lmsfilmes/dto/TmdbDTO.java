@@ -20,6 +20,7 @@ public record TmdbDTO(
         String tagline,
         String title,
         double vote_average,
+        int vote_count,
         Movies movies,
         List<TmdbDTO> results,
         List<ProductionCompany> production_companies,

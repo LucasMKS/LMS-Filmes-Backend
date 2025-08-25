@@ -24,10 +24,15 @@ public class RateSerieController {
 
         // Método para avaliar uma série.
     @PostMapping("")
-    public ResponseEntity<Series> ratingSeries(@RequestParam String serieId, @RequestParam String rating, @RequestParam String title, @RequestParam String poster_path) {
+    public ResponseEntity<Series> ratingSeries(
+            @RequestParam String serieId, 
+            @RequestParam String rating, 
+            @RequestParam String title, 
+            @RequestParam String poster_path,
+            @RequestParam(required = false) String comment) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        return ResponseEntity.ok(rateService.rateSerie(serieId, email, rating, title, poster_path));
+        return ResponseEntity.ok(rateService.rateSerie(serieId, email, rating, title, poster_path, comment));
     }
 
     // Método para obter as avaliações de uma série.

@@ -5,7 +5,6 @@ import lombok.Data;
 /**
  * Modelo de dados para séries favoritas.
  */
-
 @Data
 public class FavoriteSerie {
     private String id;

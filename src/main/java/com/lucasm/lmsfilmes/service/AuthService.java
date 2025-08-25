@@ -67,7 +67,7 @@ public class AuthService {
                 new UsernamePasswordAuthenticationToken(loginRequest.email(), loginRequest.password())
             );
         } catch (BadCredentialsException e) {
-            throw new IllegalArgumentException("Credenciais inválidas.");
+            throw new BadCredentialsException("Credenciais inválidas.");
         }
 
         // Busca o usuário no banco
@@ -76,7 +76,6 @@ public class AuthService {
 
         // Gera os tokens de autenticação
         var jwt = jwtUtils.generateToken(user);
-        var refreshToken = jwtUtils.generateRefreshToken(new HashMap<>(), user);
 
         return jwt;
     }

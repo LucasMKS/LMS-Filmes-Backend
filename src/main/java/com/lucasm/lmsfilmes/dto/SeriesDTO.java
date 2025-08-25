@@ -33,6 +33,8 @@ public class SeriesDTO {
     private String status;
     private String tagline;
     private String media_type = "tv";
+    private double vote_average;
+    private int vote_count;
 
     @Data
     public static class CreatedByDTO {
@@ -43,6 +45,7 @@ public class SeriesDTO {
     
     @Data
     public static class GenreDTO {
+        private int id;
         private String name;
     }
     
@@ -57,6 +60,7 @@ public class SeriesDTO {
 
     @Data
     public static class NetworkDTO {
+        private int id;
         private String name;
         private String logo_path;
         private String origin_country;

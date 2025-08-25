@@ -42,7 +42,19 @@ public class JWTAuthFilter extends OncePerRequestFilter {
 
         // Extrai o token JWT do cabeçalho
         final String jwtToken = authHeader.substring(7);
-        final String userEmail = jwtUtils.extractUsername(jwtToken);
+        String userEmail = null;
+        
+        try {
+            userEmail = jwtUtils.extractUsername(jwtToken);
+        } catch (io.jsonwebtoken.ExpiredJwtException e) {
+            // Token expirado - continue sem autenticar
+            filterChain.doFilter(request, response);
+            return;
+        } catch (Exception e) {
+            // Token inválido - continue sem autenticar
+            filterChain.doFilter(request, response);
+            return;
+        }
 
         // Se o e-mail do usuário não for nulo e a autenticação ainda não estiver configurada
         if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {

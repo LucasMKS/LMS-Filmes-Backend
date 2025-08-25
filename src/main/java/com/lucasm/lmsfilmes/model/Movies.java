@@ -18,6 +18,8 @@ public class Movies {
 
     private String myVote;
 
+    private String comment;
+
     private String email;
 
     private String poster_path;

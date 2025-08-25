@@ -8,7 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.lucasm.lmsfilmes.exceptions.ResourceNotFoundException;
 import com.lucasm.lmsfilmes.model.FavoriteMovie;
 import com.lucasm.lmsfilmes.repository.FavoriteMovieRepository;
 
@@ -51,11 +50,11 @@ public class FavoriteMovieService {
                 .collect(Collectors.toList());
 
         if (allFavorites.isEmpty()) {
-            logger.warn("Nenhum filme favoritado encontrado para o usuário {}", email);
-            throw new ResourceNotFoundException("Nenhum filme favoritado encontrado para o usuário: " + email);
+            logger.info("Nenhum filme favoritado encontrado para o usuário {}", email);
+        } else {
+            logger.info("Encontrados {} filmes favoritados para o usuário {}", allFavorites.size(), email);
         }
-
-        logger.info("Encontrados {} filmes favoritados para o usuário {}", allFavorites.size(), email);
+        
         return allFavorites;
     }
 }

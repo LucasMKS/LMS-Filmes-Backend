@@ -8,7 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.lucasm.lmsfilmes.exceptions.ResourceNotFoundException;
 import com.lucasm.lmsfilmes.model.FavoriteSerie;
 import com.lucasm.lmsfilmes.repository.FavoriteSerieRepository;
 
@@ -24,13 +23,22 @@ public class FavoriteSerieService {
     }
 
     public void toggleFavoriteSerie(String serieId, String email) {
+        logger.info("SÉRIE: Tentando alterar favorito - SerieID: {}, Email: {}", serieId, email);
+        
         Optional<FavoriteSerie> optionalFavorite = favoriteRepository.findBySerieIdAndEmail(serieId, email);
-        FavoriteSerie favoriteSerie = optionalFavorite.orElseGet(() -> new FavoriteSerie());
+        FavoriteSerie favoriteSerie = optionalFavorite.orElseGet(() -> {
+            logger.info("SÉRIE: Criando novo favorito para SerieID: {}", serieId);
+            return new FavoriteSerie();
+        });
+        
         favoriteSerie.setSerieId(serieId);
         favoriteSerie.setEmail(email);
-        favoriteSerie.setFavorite(!favoriteSerie.isFavorite());
-        favoriteRepository.save(favoriteSerie);
-        logger.info("Série {} favorita atualizada para {} pelo usuário {}", serieId, favoriteSerie.isFavorite(), email);
+        boolean newStatus = !favoriteSerie.isFavorite();
+        favoriteSerie.setFavorite(newStatus);
+        
+        FavoriteSerie saved = favoriteRepository.save(favoriteSerie);
+        logger.info("SÉRIE: Favorito salvo - ID: {}, SerieID: {}, Status: {}, Collection: favorite_series", 
+                   saved.getId(), saved.getSerieId(), saved.isFavorite());
     }
 
     public boolean isFavoriteSerie(String serieId, String email) {
@@ -51,11 +59,11 @@ public class FavoriteSerieService {
                 .collect(Collectors.toList());
 
         if (allFavorites.isEmpty()) {
-            logger.warn("Nenhuma série favoritada encontrada para o usuário {}", email);
-            throw new ResourceNotFoundException("Nenhuma série favoritada encontrada para o usuário: " + email);
+            logger.info("Nenhuma série favoritada encontrada para o usuário {}", email);
+        } else {
+            logger.info("Encontrados {} séries favoritas para o usuário {}", allFavorites.size(), email);
         }
 
-        logger.info("Encontrados {} séries favoritas para o usuário {}", allFavorites.size(), email);
         return allFavorites;
     }
 }

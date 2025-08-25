@@ -5,7 +5,6 @@ import lombok.Data;
 /**
  * Modelo de dados para filmes favoritos.
  */
-
 @Data
 public class FavoriteMovie {
     private String id;

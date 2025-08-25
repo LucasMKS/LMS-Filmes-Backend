@@ -44,4 +44,25 @@ public class SerieController {
         return ResponseEntity.ok(serie);
     }
 
+    // Método para obter séries que estão sendo exibidas hoje.
+    @GetMapping("/airing-today")
+    public ResponseEntity<List<SeriesDTO>> airingTodaySeries(@RequestParam(defaultValue = "1") int page) {
+        List<SeriesDTO> series = serieService.airingTodaySeries(page);
+        return ResponseEntity.ok(series);
+    }
+
+    // Método para obter séries no ar.
+    @GetMapping("/on-the-air")
+    public ResponseEntity<List<SeriesDTO>> onTheAirSeries(@RequestParam(defaultValue = "1") int page) {
+        List<SeriesDTO> series = serieService.onTheAirSeries(page);
+        return ResponseEntity.ok(series);
+    }
+
+    // Método para obter séries mais bem avaliadas.
+    @GetMapping("/top-rated")
+    public ResponseEntity<List<SeriesDTO>> topRatedSeries(@RequestParam(defaultValue = "1") int page) {
+        List<SeriesDTO> series = serieService.topRatedSeries(page);
+        return ResponseEntity.ok(series);
+    }
+
 }

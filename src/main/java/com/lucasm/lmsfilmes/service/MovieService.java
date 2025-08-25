@@ -101,7 +101,7 @@ public class MovieService {
         logger.info("Buscando filmes populares na página {}", page);
         try {
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(new URI(tmdbApiUrl + "/movie/popular?language=pt-BR&page=" + page))
+                    .uri(new URI(tmdbApiUrl + "/movie/popular?language=pt-BR&page=" + page + "&region=BR"))
                     .header("Authorization", "Bearer " + apiKey)
                     .header("Accept", "application/json")
                     .GET()
@@ -122,6 +122,90 @@ public class MovieService {
         } catch (IOException | InterruptedException | URISyntaxException e) {
             logger.error("Erro ao buscar filmes populares: {}", e.getMessage(), e);
             throw new RuntimeException("Erro ao buscar filmes populares: " + e.getMessage(), e);
+        }
+    }
+
+    public List<TmdbDTO> nowPlayingMovies(int page) {
+        logger.info("Buscando filmes em cartaz na página {}", page);
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(new URI(tmdbApiUrl + "/movie/now_playing?language=pt-BR&page=" + page + "&region=BR"))
+                    .header("Authorization", "Bearer " + apiKey)
+                    .header("Accept", "application/json")
+                    .GET()
+                    .build();
+
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            logger.debug("Status code filmes em cartaz: {}", response.statusCode());
+
+            if (response.statusCode() == 200) {
+                MovieSearchResponse searchResponse = objectMapper.readValue(response.body(), MovieSearchResponse.class);
+                logger.info("Encontrados {} filmes em cartaz", searchResponse.results().size());
+                return searchResponse.results();
+            } else {
+                logger.error("Erro ao buscar filmes em cartaz: status {}", response.statusCode());
+                throw new RuntimeException("Erro ao buscar filmes em cartaz: status " + response.statusCode());
+            }
+
+        } catch (IOException | InterruptedException | URISyntaxException e) {
+            logger.error("Erro ao buscar filmes em cartaz: {}", e.getMessage(), e);
+            throw new RuntimeException("Erro ao buscar filmes em cartaz: " + e.getMessage(), e);
+        }
+    }
+
+    public List<TmdbDTO> topRatedMovies(int page) {
+        logger.info("Buscando filmes mais bem avaliados na página {}", page);
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(new URI(tmdbApiUrl + "/movie/top_rated?language=pt-BR&page=" + page))
+                    .header("Authorization", "Bearer " + apiKey)
+                    .header("Accept", "application/json")
+                    .GET()
+                    .build();
+
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            logger.debug("Status code filmes mais bem avaliados: {}", response.statusCode());
+
+            if (response.statusCode() == 200) {
+                MovieSearchResponse searchResponse = objectMapper.readValue(response.body(), MovieSearchResponse.class);
+                logger.info("Encontrados {} filmes mais bem avaliados", searchResponse.results().size());
+                return searchResponse.results();
+            } else {
+                logger.error("Erro ao buscar filmes mais bem avaliados: status {}", response.statusCode());
+                throw new RuntimeException("Erro ao buscar filmes mais bem avaliados: status " + response.statusCode());
+            }
+
+        } catch (IOException | InterruptedException | URISyntaxException e) {
+            logger.error("Erro ao buscar filmes mais bem avaliados: {}", e.getMessage(), e);
+            throw new RuntimeException("Erro ao buscar filmes mais bem avaliados: " + e.getMessage(), e);
+        }
+    }
+
+    public List<TmdbDTO> upcomingMovies(int page) {
+        logger.info("Buscando filmes em breve na página {}", page);
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(new URI(tmdbApiUrl + "/movie/upcoming?language=pt-BR&page=" + page + "&region=BR"))
+                    .header("Authorization", "Bearer " + apiKey)
+                    .header("Accept", "application/json")
+                    .GET()
+                    .build();
+
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            logger.debug("Status code filmes em breve: {}", response.statusCode());
+
+            if (response.statusCode() == 200) {
+                MovieSearchResponse searchResponse = objectMapper.readValue(response.body(), MovieSearchResponse.class);
+                logger.info("Encontrados {} filmes em breve", searchResponse.results().size());
+                return searchResponse.results();
+            } else {
+                logger.error("Erro ao buscar filmes em breve: status {}", response.statusCode());
+                throw new RuntimeException("Erro ao buscar filmes em breve: status " + response.statusCode());
+            }
+
+        } catch (IOException | InterruptedException | URISyntaxException e) {
+            logger.error("Erro ao buscar filmes em breve: {}", e.getMessage(), e);
+            throw new RuntimeException("Erro ao buscar filmes em breve: " + e.getMessage(), e);
         }
     }
 

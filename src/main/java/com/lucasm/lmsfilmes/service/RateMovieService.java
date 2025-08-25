@@ -24,14 +24,14 @@ public class RateMovieService {
     @Autowired
     private MovieRepository movieRepository;
     
-    public Movies rateMovie(String movieId, String email, String rating, String title, String poster_path) {
+    public Movies rateMovie(String movieId, String email, String rating, String title, String poster_path, String comment) {
         try {
-            logger.info("Usuário {} avaliando filme {}(id:{}) com nota {}", email, title, movieId, rating);
+            logger.info("Usuário {} avaliando filme {}(id:{}) com nota {} e comentário: {}", email, title, movieId, rating, comment != null ? "sim" : "não");
 
             Optional<Movies> optionalMovie = movieRepository.findByMovieIdAndEmail(movieId, email);
             if (optionalMovie.isPresent()) {
                 Movies existing = optionalMovie.get();
-                updateRateMovie(rating, existing);
+                updateRateMovie(rating, comment, existing);
                 logger.warn("Usuário {} já avaliou o filme {}(id:{}). Nota existente: {}", email, title, movieId, existing.getMyVote());
                 return existing; // Retorna a nota existente
             }
@@ -41,6 +41,7 @@ public class RateMovieService {
             movie.setMovieId(movieId);
             movie.setEmail(email);
             movie.setMyVote(rating);
+            movie.setComment(comment);
             movie.setTitle(title);
             movie.setPoster_path(poster_path);
             movie.onCreate();
@@ -67,9 +68,10 @@ public class RateMovieService {
         return null;
     }
          
-    public Movies updateRateMovie(String rating, Movies existing) {
+    public Movies updateRateMovie(String rating, String comment, Movies existing) {
         try {
             existing.setMyVote(rating);
+            existing.setComment(comment);
             movieRepository.save(existing);
             return existing;
         } catch (Exception e) {
