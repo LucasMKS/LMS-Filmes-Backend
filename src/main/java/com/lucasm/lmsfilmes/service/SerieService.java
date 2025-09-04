@@ -7,6 +7,7 @@ import com.lucasm.lmsfilmes.exceptions.ResourceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -41,6 +42,7 @@ public class SerieService {
         this.objectMapper = objectMapper;
     }
 
+    @Cacheable(value = "searchSeries", key = "#query")
     public List<SeriesDTO> searchSeries(String query) {
         try {
             String encodedQuery = URLEncoder.encode(query, StandardCharsets.UTF_8.toString());
@@ -67,6 +69,7 @@ public class SerieService {
         }
     }
 
+    @Cacheable(value = "seriesDetails", key = "#serieId")
     public SeriesDTO getSeriesDetails(String serieId) {
         try {
             HttpRequest request = HttpRequest.newBuilder()
@@ -94,6 +97,7 @@ public class SerieService {
         }
     }
 
+    @Cacheable(value = "seriesPopular", key = "#page")
     public List<SeriesDTO> seriePopular(int page) {
         logger.info("Buscando séries populares na página {}", page);
         try {
@@ -121,6 +125,7 @@ public class SerieService {
         }
     }
 
+    @Cacheable(value = "seriesAiringToday", key = "#page")
     public List<SeriesDTO> airingTodaySeries(int page) {
         logger.info("Buscando séries sendo exibidas hoje na página {}", page);
         try {
@@ -148,6 +153,7 @@ public class SerieService {
         }
     }
 
+    @Cacheable(value = "seriesOnTheAir", key = "#page")
     public List<SeriesDTO> onTheAirSeries(int page) {
         logger.info("Buscando séries no ar na página {}", page);
         try {
@@ -175,6 +181,7 @@ public class SerieService {
         }
     }
 
+    @Cacheable(value = "seriesTopRated", key = "#page")
     public List<SeriesDTO> topRatedSeries(int page) {
         logger.info("Buscando séries mais bem avaliadas na página {}", page);
         try {

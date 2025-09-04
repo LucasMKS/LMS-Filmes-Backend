@@ -7,6 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.lucasm.lmsfilmes.exceptions.MovieServiceException;
@@ -24,6 +26,7 @@ public class RateSerieService {
     @Autowired
     private SerieRepository serieRepository;
 
+    @CacheEvict(value = "userRatedSeries", key = "#email")
     public Series rateSerie(String serieId, String email, String rating, String title, String poster_path, String comment) {
         try {
             logger.info("Usuário {} avaliando série {}(id:{}) com nota {} e comentário: {}", email, title, serieId, rating, comment != null ? "sim" : "não");
@@ -56,6 +59,7 @@ public class RateSerieService {
         }
     }
 
+    @Cacheable(value = "userRatedSeries", key = "#email")
     public List<Series> searchRatedSeries(String email) {
         try {
             List<Series> result = serieRepository.findAllByEmail(email);
@@ -68,6 +72,7 @@ public class RateSerieService {
         return null;
     }
 
+    @CacheEvict(value = "userRatedSeries", key = "#existing.email")
     public Series updateRateSerie(String rating, String comment, Series existing) {
         try {
             existing.setMyVote(rating);

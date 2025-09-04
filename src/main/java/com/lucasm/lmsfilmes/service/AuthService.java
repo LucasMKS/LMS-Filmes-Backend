@@ -1,7 +1,5 @@
 package com.lucasm.lmsfilmes.service;
 
-import java.util.HashMap;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;

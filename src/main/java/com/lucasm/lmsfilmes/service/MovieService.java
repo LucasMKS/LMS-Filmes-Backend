@@ -7,6 +7,7 @@ import com.lucasm.lmsfilmes.exceptions.ResourceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -39,6 +40,7 @@ public class MovieService {
         this.apiKey = apiKey;
     }
 
+    @Cacheable(value = "searchMovies", key = "#query + '_' + #page")
     public List<TmdbDTO> searchMovies(String query, int page) {
         logger.info("Buscando filmes para a query '{}' na página {}", query, page);
         try {
@@ -68,6 +70,7 @@ public class MovieService {
         }
     }
 
+    @Cacheable(value = "movieDetails", key = "#movieId")
     public TmdbDTO getMoviesDetails(String movieId) {
         logger.info("Buscando detalhes do filme com ID {}", movieId);
         try {
@@ -97,6 +100,7 @@ public class MovieService {
         }
     }
 
+    @Cacheable(value = "moviePopular", key = "#page")
     public List<TmdbDTO> moviePopular(int page) {
         logger.info("Buscando filmes populares na página {}", page);
         try {
@@ -125,6 +129,7 @@ public class MovieService {
         }
     }
 
+    @Cacheable(value = "moviesNowPlaying", key = "#page")
     public List<TmdbDTO> nowPlayingMovies(int page) {
         logger.info("Buscando filmes em cartaz na página {}", page);
         try {
@@ -153,6 +158,7 @@ public class MovieService {
         }
     }
 
+    @Cacheable(value = "moviesTopRated", key = "#page")
     public List<TmdbDTO> topRatedMovies(int page) {
         logger.info("Buscando filmes mais bem avaliados na página {}", page);
         try {
@@ -181,6 +187,7 @@ public class MovieService {
         }
     }
 
+    @Cacheable(value = "moviesUpcoming", key = "#page")
     public List<TmdbDTO> upcomingMovies(int page) {
         logger.info("Buscando filmes em breve na página {}", page);
         try {

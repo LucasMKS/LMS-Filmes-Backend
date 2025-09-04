@@ -1,9 +1,9 @@
 package com.lucasm.lmsfilmes.repository;
 
-import com.lucasm.lmsfilmes.model.FavoriteMovie;
-
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
+
+import com.lucasm.lmsfilmes.model.FavoriteMovie;
 
 import java.util.List;
 import java.util.Optional;

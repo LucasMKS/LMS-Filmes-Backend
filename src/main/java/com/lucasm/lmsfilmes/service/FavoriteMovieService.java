@@ -6,6 +6,8 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.lucasm.lmsfilmes.model.FavoriteMovie;
@@ -22,6 +24,7 @@ public class FavoriteMovieService {
         this.favoriteRepository = favoriteRepository;
     }
 
+    @CacheEvict(value = {"userFavoriteMovies", "userFavoriteMovieStatus"}, allEntries = true)
     public void toggleFavoriteMovie(String movieId, String email) {
         Optional<FavoriteMovie> optionalFavorite = favoriteRepository.findByMovieIdAndEmail(movieId, email);
         FavoriteMovie favoriteMovie = optionalFavorite.orElseGet(() -> new FavoriteMovie());
@@ -32,6 +35,7 @@ public class FavoriteMovieService {
         logger.info("Filme {} favorito atualizado para {} pelo usuário {}", movieId, favoriteMovie.isFavorite(), email);
     }
 
+    @Cacheable(value = "userFavoriteMovieStatus", key = "#email + '_' + #movieId")
     public boolean isFavoriteMovie(String movieId, String email) {
         logger.info("Verificando se o filme {} é favorito do usuário {}", movieId, email);
 
@@ -42,6 +46,7 @@ public class FavoriteMovieService {
         return result;
     }
 
+    @Cacheable(value = "userFavoriteMovies", key = "#email")
     public List<FavoriteMovie> getAllFavoritesMovies(String email) {
         logger.info("Buscando todos os filmes favoritos do usuário {}", email);
         List<FavoriteMovie> allFavorites = favoriteRepository.findAllByEmail(email)
