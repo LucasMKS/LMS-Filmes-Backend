@@ -1,38 +1,5 @@
 spring:
   application:
-    name: "LMS Filmes"
-
-  cache:
-    type: redis
-
-  data:
-    mongodb:
-      uri: ${MONGODB_URI}
-    redis:
-      host: ${REDIS_HOST}
-      port: ${REDIS_PORT}
-
-  rabbitmq:
-    host: ${RABBIT_HOST}
-    port: ${RABBIT_PORT}
-    username: ${RABBIT_USERNAME}
-    password: ${RABBIT_PASSWORD}
-
-jwt:
-  auth:
-    secret: "${JWT_SECRET}"
-    expiration: ${JWT_EXPIRATION}
-
-tmdb:
-  api:
-    url: "${TMDB_API_URL}"
-    key: "${TMDB_API_KEY}"
-
-logging:
-  level:
-    org:
-      springframework:
-        cache: DEBUG
-        data:
-          mongodb: DEBUG
-          redis: DEBUG
+    name: lms-filmes
+  profiles:
+    active: dev

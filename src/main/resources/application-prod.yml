@@ -1,0 +1,40 @@
+spring:
+  application:
+    name: "LMS Filmes"
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration
+
+  cache:
+    type: redis
+
+  data:
+    mongodb:
+      uri: ${MONGODB_URI}
+    redis:
+      url: ${REDIS_URL}
+
+  rabbitmq:
+    host: ${RABBIT_HOST}
+    port: ${RABBIT_PORT}
+    username: ${RABBIT_USERNAME}
+    password: ${RABBIT_PASSWORD}
+
+jwt:
+  auth:
+    secret: "${JWT_SECRET}"
+    expiration: ${JWT_EXPIRATION}
+
+tmdb:
+  api:
+    url: "${TMDB_API_URL}"
+    key: "${TMDB_API_KEY}"
+
+logging:
+  level:
+    org:
+      springframework:
+        cache: DEBUG
+        data:
+          mongodb: DEBUG
+          redis: DEBUG

@@ -1,0 +1,38 @@
+spring:
+  application:
+    name: LMS Filmes
+
+  cache:
+    type: redis
+
+  data:
+    mongodb:
+      uri: mongodb+srv://lucasmks:njfrUaETVL8r5oTo@lmsfilms.ziljgr0.mongodb.net/lmsfilmes?retryWrites=true&w=majority&appName=lmsfilms
+    redis:
+      url: rediss://default:AVjRAAIncDExM2RjZjk3MzA1YzM0YmQ3YTM4YjZiODljMmUwMzk2NnAxMjI3Mzc@vast-jackass-22737.upstash.io:6379
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: admin
+    password: admin123
+
+jwt:
+  auth:
+    secret: g8F2LaU7r2atY4uH8L2kQ1E9w3R5Lu5c3as6T3M0n4B1H1unA2J7m9D0k1X6p0F3R8E2W6Y9T3R0D2U9P8J5L2O8K1M7n2B3X8b7
+    expiration: 86400000
+
+tmdb:
+  api:
+    url: https://api.themoviedb.org/3
+    key: eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJlYWUzY2UzYTQyZTc1ZjI3MjRkYjJkNjc5MjkyZTA1NSIsIm5iZiI6MTcyMzMzNjExNy43NTkyMTksInN1YiI6IjY2YjgwNTAxZWY5NmFlNDQzYmYyYWUxMCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.dz9hE4D2QbT338EyO1TseWayfJ-ZpznlDdrwArUyw9A
+
+logging:
+  level:
+    org:
+      springframework:
+        cache: DEBUG
+
+        data:
+          mongodb: DEBUG
+          redis: DEBUG
