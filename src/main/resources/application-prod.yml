@@ -12,7 +12,7 @@ spring:
       url: ${REDIS_URL}
 
   rabbitmq:
-    url: ${RABBITMQ_URL}
+    addresses: ${RABBITMQ_URL}
 
 jwt:
   auth:

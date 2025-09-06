@@ -12,7 +12,7 @@ spring:
       url: rediss://default:AVjRAAIncDExM2RjZjk3MzA1YzM0YmQ3YTM4YjZiODljMmUwMzk2NnAxMjI3Mzc@vast-jackass-22737.upstash.io:6379
 
   rabbitmq:
-    url: amqps://hytzicra:BY3VCMzxqAIRYxIKG86qGJa9iJw7XHGM@duck.lmq.cloudamqp.com/hytzicra
+    addresses: amqps://hytzicra:BY3VCMzxqAIRYxIKG86qGJa9iJw7XHGM@duck.lmq.cloudamqp.com/hytzicra
 
 jwt:
   auth:
