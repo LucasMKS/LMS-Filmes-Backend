@@ -89,3 +89,5 @@ replay_pid*
 *.vsix
 pom.xml
 src/main/resources/application.properties
+
+.env*
