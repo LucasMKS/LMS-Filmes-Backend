@@ -1,9 +1,6 @@
 spring:
   application:
     name: "LMS Filmes"
-  autoconfigure:
-    exclude:
-      - org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration
 
   cache:
     type: redis
@@ -15,10 +12,7 @@ spring:
       url: ${REDIS_URL}
 
   rabbitmq:
-    host: ${RABBIT_HOST}
-    port: ${RABBIT_PORT}
-    username: ${RABBIT_USERNAME}
-    password: ${RABBIT_PASSWORD}
+    url: ${RABBITMQ_URL}
 
 jwt:
   auth:
