@@ -8,6 +8,7 @@ spring:
   data:
     mongodb:
       uri: ${MONGODB_URI}
+      database: lmsfilmes
     redis:
       url: ${REDIS_URL}
 
