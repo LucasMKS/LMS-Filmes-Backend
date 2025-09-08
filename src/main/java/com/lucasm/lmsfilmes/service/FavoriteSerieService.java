@@ -20,11 +20,8 @@ public class FavoriteSerieService {
 
     private final FavoriteSerieRepository favoriteRepository;
 
-    private final RabbitMQProducer rabbitMQProducer;
-
-    public FavoriteSerieService(FavoriteSerieRepository favoriteRepository, RabbitMQProducer rabbitMQProducer) {
+    public FavoriteSerieService(FavoriteSerieRepository favoriteRepository) {
         this.favoriteRepository = favoriteRepository;
-        this.rabbitMQProducer = rabbitMQProducer;
     }
 
     @CacheEvict(value = {"userFavoriteSeries", "userFavoriteSerieStatus"}, allEntries = true)
@@ -42,10 +39,6 @@ public class FavoriteSerieService {
         
         boolean newStatus = !favoriteSerie.isFavorite();
         favoriteSerie.setFavorite(newStatus);
-
-        String msg = String.format("Usuário %s alterou favorito da série %s para %s", 
-                            email, serieId, newStatus);
-        rabbitMQProducer.sendMessage(msg);
         
         FavoriteSerie saved = favoriteRepository.save(favoriteSerie);
         logger.info("SÉRIE: Favorito salvo - ID: {}, SerieID: {}, Status: {}, Collection: favorite_series", 
